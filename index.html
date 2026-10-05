@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CryptoLab — Digital Cryptography Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#030815;--panel:rgba(8,19,42,.78);--panel2:rgba(11,28,57,.72);
+  --line:rgba(88,155,255,.24);--text:#eef6ff;--muted:#8ea9ca;
+  --cyan:#38d8ff;--blue:#3d7cff;--purple:#8d5cff;--pink:#c45cff;
+  --good:#4cffb1;--danger:#ff6b8a;--shadow:0 20px 70px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+ radial-gradient(circle at 75% 10%,rgba(61,124,255,.18),transparent 28%),
+ radial-gradient(circle at 30% 60%,rgba(141,92,255,.12),transparent 30%),
+ linear-gradient(135deg,#020611,#06132b 55%,#02050e);
+ color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+ background-image:linear-gradient(rgba(70,140,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(70,140,255,.12) 1px,transparent 1px);
+ background-size:55px 55px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 40%,transparent 25%,rgba(0,0,0,.48) 100%)}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:245px;padding:25px 18px;border-right:1px solid var(--line);background:rgba(2,9,23,.82);backdrop-filter:blur(22px);z-index:20}
+.logo{display:flex;align-items:center;gap:12px;padding:2px 10px 28px}
+.logoMark{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#6b58ff,#28c9ff);box-shadow:0 0 28px rgba(77,115,255,.5);font-size:20px}
+.logo strong{font-size:20px;letter-spacing:-.5px}.logo span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.nav{display:flex;flex-direction:column;gap:7px}
+.nav button{border:1px solid transparent;background:transparent;color:#9bb4d3;text-align:left;padding:12px 14px;border-radius:12px;display:flex;gap:12px;align-items:center;transition:.25s}
+.nav button:hover,.nav button.active{color:#fff;background:linear-gradient(90deg,rgba(46,101,255,.34),rgba(88,71,255,.12));border-color:rgba(83,143,255,.24);box-shadow:inset 3px 0 var(--cyan),0 8px 24px rgba(29,85,200,.12)}
+.icon{width:20px;text-align:center;font-size:17px}.sideBottom{position:absolute;bottom:25px;left:25px;right:25px;border-top:1px solid var(--line);padding-top:18px;color:#7895b8;font-size:11px;line-height:1.6}
+.sideBottom b{color:#b9d8ff}.dot{display:inline-block;width:6px;height:6px;background:var(--good);border-radius:50%;box-shadow:0 0 10px var(--good);margin-right:7px}
+.main{grid-column:2;padding:18px 30px 60px;min-width:0}
+.topbar{height:50px;display:flex;align-items:center;justify-content:flex-end;gap:14px}
+.status{border:1px solid rgba(71,157,255,.2);background:rgba(9,27,53,.55);padding:9px 14px;border-radius:30px;color:#a9c6e8;font-size:11px}
+.status b{color:var(--cyan)}
+.hero{position:relative;min-height:285px;border:1px solid var(--line);border-radius:25px;overflow:hidden;background:
+ radial-gradient(circle at 76% 50%,rgba(45,133,255,.22),transparent 23%),
+ linear-gradient(110deg,rgba(6,15,35,.94),rgba(5,20,44,.72));
+ box-shadow:var(--shadow);display:flex;align-items:center;padding:44px 48px}
+.hero:before{content:"";position:absolute;width:300px;height:300px;right:10%;top:-90px;border-radius:50%;border:1px solid rgba(61,216,255,.25);box-shadow:0 0 70px rgba(61,124,255,.2),inset 0 0 70px rgba(61,124,255,.08)}
+.hero:after{content:"🔐";position:absolute;right:15%;top:58px;font-size:95px;filter:drop-shadow(0 0 28px #2dafff);opacity:.9;animation:float 4s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-10px) rotate(2deg)}}
+.heroContent{position:relative;z-index:2;max-width:650px}
+.eyebrow{display:inline-flex;border:1px solid rgba(65,177,255,.3);border-radius:30px;padding:7px 12px;font-family:"Space Mono";font-size:10px;letter-spacing:1.5px;color:#9cdcff;background:rgba(17,57,100,.35)}
+h1{font-size:58px;line-height:1;margin:18px 0 13px;letter-spacing:-3px}h1 span{background:linear-gradient(90deg,#fff,#7f75ff,#3ddcff);-webkit-background-clip:text;color:transparent}
+.hero p{color:#9db8d7;max-width:590px;line-height:1.7;margin:0}.chips{position:absolute;right:30px;bottom:28px;display:flex;gap:8px;flex-wrap:wrap;max-width:360px}.chip{padding:8px 11px;border:1px solid rgba(75,160,255,.28);border-radius:20px;color:#74cfff;background:rgba(4,25,52,.65);font-size:11px}
+.workspace{margin-top:18px;border:1px solid rgba(91,153,255,.25);background:rgba(5,15,34,.82);border-radius:24px;padding:18px;box-shadow:var(--shadow);backdrop-filter:blur(20px)}
+.modebar{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+.segment{display:flex;border:1px solid var(--line);padding:4px;border-radius:30px;background:rgba(3,12,28,.7)}
+.segment button{border:0;background:transparent;color:#93acce;padding:11px 38px;border-radius:25px}.segment button.active{color:#fff;background:linear-gradient(90deg,#6450ff,#5d72ff);box-shadow:0 0 25px rgba(104,79,255,.3)}
+.keybox{display:flex;align-items:center;gap:9px;color:#8fa9c8;font-size:12px}.keybox input{width:105px}
+.input,.select{background:rgba(5,18,39,.85);border:1px solid rgba(83,145,240,.34);color:#e8f4ff;border-radius:11px;padding:11px 13px;outline:none}
+.input:focus,textarea:focus{border-color:#4d9dff;box-shadow:0 0 0 3px rgba(61,124,255,.1)}
+.ciphers{display:flex;gap:8px;margin-top:18px;overflow:auto;padding-bottom:5px}
+.cipher{white-space:nowrap;border:1px solid rgba(87,142,230,.25);background:rgba(12,31,60,.55);color:#8da9ca;padding:10px 18px;border-radius:22px;transition:.2s}
+.cipher:hover{transform:translateY(-2px);color:#dff5ff}.cipher.active{border-color:#536dff;background:linear-gradient(135deg,rgba(76,81,255,.35),rgba(27,137,255,.2));color:#fff;box-shadow:0 0 22px rgba(80,105,255,.24)}
+.editor{display:grid;grid-template-columns:1fr 70px 1fr;gap:12px;align-items:center;margin-top:18px}
+.field label{display:flex;justify-content:space-between;margin:0 0 8px;color:#c4d8f0;font-size:13px}.counter{color:#6684a7;font-size:10px}
+textarea{width:100%;height:150px;resize:vertical;min-height:110px;background:rgba(7,22,45,.9);border:1px solid rgba(76,137,230,.3);border-radius:15px;padding:16px;color:#cde8ff;outline:none;line-height:1.6}
+.arrow{width:48px;height:48px;border-radius:50%;margin:auto;border:1px solid #4a9bff;background:rgba(17,69,145,.3);color:#7de1ff;font-size:22px;box-shadow:0 0 30px rgba(40,137,255,.25)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}.btn{border:1px solid rgba(80,145,255,.4);background:rgba(9,27,56,.8);color:#c7ddf5;border-radius:10px;padding:10px 14px}.btn.primary{background:linear-gradient(90deg,#6151ff,#327cff);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(63,88,255,.22)}.btn:hover{transform:translateY(-1px);filter:brightness(1.12)}
+.infoGrid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+.infoCard{border:1px solid rgba(76,137,230,.25);background:rgba(6,20,42,.68);border-radius:18px;padding:20px}
+.infoCard h3{margin:0 0 9px;font-size:14px}.infoCard p{margin:0;color:#8ca8c9;font-size:12px;line-height:1.7}.strength{margin-top:14px;height:7px;border-radius:20px;background:#152c4f;overflow:hidden}.strength i{display:block;height:100%;width:20%;background:linear-gradient(90deg,#ff6389,#ffb45c);box-shadow:0 0 15px #ff6389}.statrow{display:flex;justify-content:space-between;font-size:11px;color:#7897ba;padding-top:9px}.statrow b{color:#ff819b}
+.visual{display:none;margin-top:14px;border:1px solid rgba(76,137,230,.25);border-radius:18px;padding:20px;background:radial-gradient(circle at 50% 50%,rgba(96,71,255,.12),transparent 45%),rgba(4,14,31,.8)}
+.visual.show{display:block}.visualTitle{font-size:12px;color:#8ecbff;margin-bottom:18px;font-family:"Space Mono"}.flow{display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap}.letter{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;border:1px solid #6b65ff;background:rgba(46,52,117,.35);font-size:23px;font-weight:700;box-shadow:0 0 28px rgba(111,83,255,.35)}.flowArrow{color:#53d9ff;font-size:25px}.explain{margin-top:18px;color:#7898bc;font-size:11px;text-align:center}
+.toast{position:fixed;right:24px;bottom:24px;transform:translateY(30px);opacity:0;pointer-events:none;background:#0a1d3a;border:1px solid #3d8cff;color:#dff6ff;padding:12px 16px;border-radius:12px;box-shadow:0 15px 45px #0008;transition:.3s;z-index:50}.toast.show{transform:none;opacity:1}
+.mobile{display:none}
+@media(max-width:900px){.app{display:block}.sidebar{display:none}.main{padding:12px}.mobile{display:flex}.hero{padding:35px 25px;min-height:310px}.hero:after{opacity:.35;right:5%}h1{font-size:45px}.chips{position:static;margin-top:25px}.editor{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}.infoGrid{grid-template-columns:1fr}.topbar{justify-content:space-between}}
+@media(max-width:600px){.hero{border-radius:18px}.workspace{padding:12px;border-radius:18px}.segment{width:100%}.segment button{flex:1;padding:10px 8px}.keybox{width:100%}.keybox input{flex:1}.hero:before,.hero:after{display:none}h1{font-size:39px;letter-spacing:-2px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="logoMark">🔐</div><div><strong>Crypto<span style="display:inline;color:#8d5cff">Lab</span></strong><span>Explore • Encrypt • Learn</span></div></div>
+  <nav class="nav">
+    <button class="active"><span class="icon">⌂</span>Home</button>
+    <button onclick="focusLab()"><span class="icon">♙</span>Encrypt / Decrypt</button>
+    <button onclick="showVisualization()"><span class="icon">◉</span>Visualize</button>
+  </nav>
+  <div class="sideBottom"><span class="dot"></span><b>LAB ONLINE</b><br>Local processing • No data sent to a server</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="mobile logo" style="padding:0"><div class="logoMark">🔐</div><strong>CryptoLab</strong></div>
+    <div class="status">◉ <b>SECURE</b> &nbsp; All processing happens in your browser</div>
+  </div>
+
+  <section class="hero">
+    <div class="heroContent">
+      <div class="eyebrow">DIGITAL CRYPTOGRAPHY LAB</div>
+      <h1>Crypto<span>Lab</span></h1>
+      <p>Turn plain text into secret code — or break the code. Explore classical ciphers, understand how they work, and discover how secure (or not) they really are.</p>
+      <div class="chips"><span class="chip">Caesar</span><span class="chip">Vigenère</span><span class="chip">Vernam</span><span class="chip">Rail Fence</span><span class="chip">Hill</span></div>
+    </div>
+  </section>
+
+  <section class="workspace" id="lab">
+    <div class="modebar">
+      <div class="segment"><button id="encryptMode" class="active" onclick="setMode(false)">♙ &nbsp; Encrypt</button><button id="decryptMode" onclick="setMode(true)">♙ &nbsp; Decrypt</button></div>
+      <div class="keybox">Key / Shift <input id="key" class="input" value="3" placeholder="Key"></div>
+    </div>
+
+    <div class="ciphers">
+      <button class="cipher active" onclick="selectCipher(this,'Caesar')">Caesar</button>
+      <button class="cipher" onclick="selectCipher(this,'Vigenère')">Vigenère</button>
+      <button class="cipher" onclick="selectCipher(this,'Vernam')">Vernam</button>
+      <button class="cipher" onclick="selectCipher(this,'Rail Fence')">Rail Fence</button>
+      <button class="cipher" onclick="selectCipher(this,'Hill')">Hill</button>
+    </div>
+
+    <div class="editor">
+      <div class="field"><label>Plain Text <span class="counter" id="inCount">11/1000</span></label><textarea id="input" maxlength="1000">Hello World</textarea></div>
+      <button class="arrow" onclick="processCipher()" title="Run cipher">→</button>
+      <div class="field"><label>Cipher Text <span class="counter" id="outCount">0/1000</span></label><textarea id="output" maxlength="1000" placeholder="Your result appears here..." readonly></textarea></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" onclick="processCipher()">⚡ <span id="actionText">Encrypt</span></button>
+      <button class="btn" onclick="clearAll()">↻ Clear</button>
+      <button class="btn" onclick="copyResult()">▣ Copy Result</button>
+      <button class="btn" onclick="showVisualization()">◉ Visualize</button>
+    </div>
+
+    <div class="visual" id="visual">
+      <div class="visualTitle">LIVE TRANSFORMATION // <span id="visualCipher">CAESAR</span></div>
+      <div class="flow" id="flow"></div>
+      <div class="explain" id="explain">Each letter is transformed according to the selected cipher.</div>
+    </div>
+
+    <div class="infoGrid">
+      <div class="infoCard">
+        <h3>▣ How <span id="infoCipher">Caesar</span> Cipher Works?</h3>
+        <p id="infoText">The Caesar cipher shifts each letter by a fixed number of positions in the alphabet. With a shift of 3, A becomes D, B becomes E, and so on.</p>
+        <div style="margin-top:13px;color:#4fd7ff;font-size:11px;cursor:pointer" onclick="showVisualization()">Learn More →</div>
+      </div>
+      </div>
+  </section>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+let cipher='Caesar', decrypt=false;
+
+const descriptions={
+ 'Caesar':['The Caesar cipher shifts each letter by a fixed number of positions in the alphabet. With a shift of 3, A becomes D, B becomes E, and so on.',20,'26','Very Easy'],
+ 'Vigenère':['The Vigenère cipher uses a repeating keyword to apply different Caesar shifts to different letters, making it stronger than a single fixed shift.',42,'26 × key','Easy'],
+ 'Vernam':['The Vernam cipher combines text with a key character-by-character. With a truly random one-time key of equal length, it becomes a one-time pad.',70,'Key length','Hard'],
+ 'Rail Fence':['Rail Fence is a transposition cipher. It rearranges the positions of characters across zig-zag rails rather than changing the characters themselves.',30,'Rails','Easy'],
+ 'Hill':['The Hill cipher uses matrix multiplication over modular arithmetic to transform blocks of letters into ciphertext.',55,'Matrix','Medium']
+};
+
+function selectCipher(btn,name){
+ document.querySelectorAll('.cipher').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ cipher=name;document.getElementById('infoCipher').textContent=name;
+ let d=descriptions[name];document.getElementById('infoText').textContent=d[0];
+ document.getElementById('strengthBar').style.width=d[1]+'%';
+ document.getElementById('keySpace').textContent=d[2];document.getElementById('brute').textContent=d[3];
+ document.getElementById('key').value=name==='Caesar'?'3':name==='Rail Fence'?'3':'KEY';
+ processCipher();
+}
+function setMode(v){
+ decrypt=v;document.getElementById('encryptMode').classList.toggle('active',!v);document.getElementById('decryptMode').classList.toggle('active',v);
+ document.getElementById('actionText').textContent=v?'Decrypt':'Encrypt';
+}
+function caesar(s,k){k=((parseInt(k)||0)%26+26)%26; if(decrypt)k=26-k;return [...s].map(c=>{let n=c.charCodeAt(0);if(n>=65&&n<=90)return String.fromCharCode((n-65+k)%26+65);if(n>=97&&n<=122)return String.fromCharCode((n-97+k)%26+97);return c}).join('')}
+function vig(s,key){
+ key=String(key||'KEY').toUpperCase().replace(/[^A-Z]/g,'')||'KEY';let i=0;
+ return [...s].map(c=>{if(!/[A-Za-z]/.test(c))return c;let k=key.charCodeAt(i++%key.length)-65;if(decrypt)k=26-k;let base=c>='a'&&c<='z'?97:65;return String.fromCharCode((c.charCodeAt(0)-base+k+26)%26+base)}).join('')
+}
+function railEncrypt(s,rails){rails=Math.max(2,parseInt(rails)||2);let a=Array.from({length:rails},()=>[]),r=0,dir=1;for(const c of s){a[r].push(c);if(r===0)dir=1;if(r===rails-1)dir=-1;r+=dir}return a.flat().join('')}
+function railDecrypt(s,rails){rails=Math.max(2,parseInt(rails)||2);let pattern=[],r=0,dir=1;for(let i=0;i<s.length;i++){pattern.push(r);if(r===0)dir=1;if(r===rails-1)dir=-1;r+=dir}let counts=Array(rails).fill(0);pattern.forEach(x=>counts[x]++);let rows=[],p=0;for(let n of counts){rows.push([...s.slice(p,p+n)]);p+=n}return pattern.map(x=>rows[x].shift()).join('')}
+function vernam(s,key){key=String(key||'KEY');let i=0;return [...s].map(c=>{if(!/[A-Za-z]/.test(c))return c;let k=key.charCodeAt(i++%key.length)-65;if(k<0)k=0;let base=c>='a'&&c<='z'?97:65;let shift=decrypt?-k:k;return String.fromCharCode((c.charCodeAt(0)-base+shift+26)%26+base)}).join('')}
+function processCipher(){
+ const input=document.getElementById('input').value,key=document.getElementById('key').value;let out='';
+ try{
+  if(cipher==='Caesar')out=caesar(input,key);
+  else if(cipher==='Vigenère')out=vig(input,key);
+  else if(cipher==='Vernam')out=vernam(input,key);
+  else if(cipher==='Rail Fence')out=decrypt?railDecrypt(input,key):railEncrypt(input,key);
+  else out='Hill cipher demo: use a 2×2 key matrix such as 3,3,2,5.';
+ }catch(e){out='Invalid key or input.'}
+ document.getElementById('output').value=out;
+ updateCounts();if(document.getElementById('visual').classList.contains('show'))renderFlow(input,out);
+}
+function updateCounts(){document.getElementById('inCount').textContent=document.getElementById('input').value.length+'/1000';document.getElementById('outCount').textContent=document.getElementById('output').value.length+'/1000'}
+document.getElementById('input').addEventListener('input',updateCounts);
+function copyResult(){let v=document.getElementById('output').value;if(!v)return toast('Nothing to copy yet.');navigator.clipboard?.writeText(v).then(()=>toast('Cipher text copied ✓')).catch(()=>toast('Select and copy the result manually.'))}
+function clearAll(){document.getElementById('input').value='';document.getElementById('output').value='';updateCounts();document.getElementById('visual').classList.remove('show')}
+function showVisualization(){document.getElementById('visual').classList.add('show');processCipher();document.getElementById('visual').scrollIntoView({behavior:'smooth',block:'center'})}
+function renderFlow(a,b){
+ let pairs=[];for(let i=0;i<Math.min(8,a.length);i++){if(/[A-Za-z]/.test(a[i])){let j=i< b.length?i:0;pairs.push(`<div class="letter">${a[i].toUpperCase()}</div><div class="flowArrow">→</div><div class="letter">${b[j]?.toUpperCase()||'?'}</div>`)}}
+ document.getElementById('flow').innerHTML=pairs.length?pairs.join(''):'<div class="letter">?</div>';
+ document.getElementById('visualCipher').textContent=cipher.toUpperCase();
+ document.getElementById('explain').textContent=cipher==='Caesar'?`Shift ${document.getElementById('key').value||3}: each letter moves through the alphabet.`:`${cipher} transformation shown for the first characters.`;
+}
+function focusLab(){document.getElementById('lab').scrollIntoView({behavior:'smooth'});document.getElementById('input').focus()}
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__t);window.__t=setTimeout(()=>t.classList.remove('show'),2200)}
+processCipher();updateCounts();
+</script>
+</body>
+</html>
